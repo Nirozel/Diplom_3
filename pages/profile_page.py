@@ -3,7 +3,7 @@ from locators.profile_locators import ProfileLocators
 
 
 class ProfilePage(BasePage):
-    def click_order_history_link(self):
+    def click_order_history_button(self):
         self.click(ProfileLocators.ORDER_HISTORY_LINK)
 
     def click_logout_button(self):

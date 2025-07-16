@@ -68,14 +68,14 @@ class BasePage:
     def get_ingredient_locator_by_name(ingredient_name):
         return By.XPATH, f"//img[contains(@alt, '{ingredient_name}')]/ancestor::a[contains(@class, 'BurgerIngredient_ingredient__')]"
 
-    # def click_via_js(self, element):
-    #     ActionChains(self.driver).move_to_element(element).click().perform()
-    #
-    # def click_with_modal_handling(self, locator, modal_overlay_locator=None):
-    #     try:
-    #         self.click(locator)
-    #     except ElementClickInterceptedException:
-    #         if modal_overlay_locator:
-    #             self.wait_for_element_hide(modal_overlay_locator)
-    #         button = self.wait_for_clickable(locator)
-    #         self.click_via_js(button)
+    def click_via_js(self, element):
+        ActionChains(self.driver).move_to_element(element).click().perform()
+
+    def click_with_modal_handling(self, locator, modal_overlay_locator=None):
+        try:
+            self.click(locator)
+        except ElementClickInterceptedException:
+            if modal_overlay_locator:
+                self.wait_for_element_hide(modal_overlay_locator)
+            button = self.wait_for_clickable(locator)
+            self.click_via_js(button)

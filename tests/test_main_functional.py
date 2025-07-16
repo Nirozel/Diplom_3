@@ -56,6 +56,7 @@ class TestMainFunctionality:
 
         with allure.step("Добавление булки и оформление заказа"):
             main_page.drag_bun_to_constructor(ingredient_name="Флюоресцентная булка R2-D3")
+            main_page.wait_for_page_loaded()
             main_page.place_order()
 
         with allure.step("Проверка номера заказа"):

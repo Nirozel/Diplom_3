@@ -1,3 +1,4 @@
+from locators.order_feed_locators import OrderFeedLocators
 from .base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from locators.login_locators import LoginLocators
@@ -49,9 +50,9 @@ class MainPage(BasePage):
     def is_login_button_visible(self):
         return self.is_visible(LoginLocators.LOGIN_BUTTON)
 
-    def safely_click_order_feed_button(self):
-        self.safe_click_with_modal_handling(
-            MainPageLocators.ORDER_FEED_BUTTON,
-            MainPageLocators.MODAL_OVERLAY
-        )
+    def close_order_modal(self):
+        self.click(OrderFeedLocators.CLOSE_MODAL_ORDER)
+        pass
+
+
 

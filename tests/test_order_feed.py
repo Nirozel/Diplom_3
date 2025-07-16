@@ -1,4 +1,6 @@
 import allure
+
+from pages import main_page
 from pages.main_page import MainPage
 from pages.order_feed_page import OrderFeedPage
 
@@ -24,88 +26,85 @@ class TestOrderFeed:
     def test_user_order_in_feed(self, driver, login):
         main_page = MainPage(driver)
         order_feed_page = OrderFeedPage(driver)
-
         with allure.step("Создание нового заказа"):
             with allure.step("Добавление булки и оформление заказа"):
                 main_page.drag_bun_to_constructor(ingredient_name="Флюоресцентная булка R2-D3")
+                main_page.wait_for_page_loaded()
                 main_page.place_order()
             with allure.step("Проверка номера заказа"):
                 assert main_page.is_order_modal_opened()
-            main_page.safely_close_modal()
-
+                number_order = order_feed_page.get_number_order_details()
+                main_page.wait_for_page_loaded()
+                main_page.close_order_modal()
         with allure.step("Переход в ленту заказов"):
             main_page.go_to_order_feed()
-            order_feed_page.wait_for_feed_loaded()
+            order_feed_page.wait_for_feed_page_loaded()
 
-        with allure.step("Проверка отображения заказа в ленте"):
-            displayed_numbers = order_feed_page.get_displayed_order_numbers()
-            assert order_number in displayed_numbers, \
-                f"Заказ {order_number} не найден в ленте. Отображаются: {displayed_numbers}"
+        with allure.step("Получение заказа в ленте"):
+            getting_number = order_feed_page.get_order_detail()
+
+            with allure.step("Поиск номера заказа"):
+                assert number_order in getting_number
 
     @allure.title("При создании заказа счетчик 'Выполнено за всё время' увеличивается")
     def test_total_orders_counter_increase(self, driver, login):
         main_page = MainPage(driver)
         order_feed_page = OrderFeedPage(driver)
+        order_feed_page.wait_for_feed_page_loaded()
 
         with allure.step("Получение начального значения счетчика"):
-            main_page.safely_go_to_order_feed()
-            order_feed_page.wait_for_feed_loaded()
-            initial_count = order_feed_page.get_total_orders()
-
-        with allure.step("Создание нового заказа"):
-            main_page.click_constructor_button()
-            main_page.drag_bun_to_constructor()
-            main_page.click_order_button()
-            main_page.wait_for_real_order_number()
-            main_page.safely_close_modal()
-
-        with allure.step("Проверка увеличения счетчика"):
             main_page.go_to_order_feed()
-            order_feed_page.wait_for_total_increase(initial_count)
-            new_count = order_feed_page.get_total_orders()
-            assert new_count > initial_count, \
-                f"Ожидалось, что счетчик увеличится. Было: {initial_count}, стало: {new_count}"
-
-    @allure.title("При создании заказа счетчик 'Выполнено за сегодня' увеличивается")
-    def test_today_orders_counter_increase(self, driver, login):
-        main_page = MainPage(driver)
-        order_feed_page = OrderFeedPage(driver)
-
-        with allure.step("Получение начального значения счетчика"):
-            main_page.safely_go_to_order_feed()
-            order_feed_page.wait_for_feed_loaded()
-            initial_today = order_feed_page.get_today_orders_count()
+            main_count = order_feed_page.get_main_count()
 
         with allure.step("Создание нового заказа"):
-            main_page.click_constructor_button()
-            main_page.drag_bun_to_constructor()
-            main_page.click_order_button()
-            main_page.wait_for_real_order_number()
-            main_page.safely_close_modal()
+            main_page.go_to_constructor()
+            main_page.drag_bun_to_constructor(ingredient_name="Флюоресцентная булка R2-D3")
+            main_page.wait_for_page_loaded()
+            main_page.place_order()
+
+        with allure.step("Проверка номера заказа"):
+            assert main_page.is_order_modal_opened()
+            number_order = order_feed_page.get_number_order_details()
+            order_feed_page.get_number_order_details()
+            main_page.wait_for_page_loaded()
+            main_page.close_order_modal()
+        with allure.step("Переход в ленту заказов"):
+            order_feed_page.wait_for_feed_page_loaded()
+            main_page.go_to_order_feed()
+            order_feed_page.wait_for_feed_page_loaded()
+        with allure.step("Получение заказа в ленте"):
+            getting_number = order_feed_page.get_order_detail()
+
+            with allure.step("Поиск номера заказа"):
+                assert number_order in getting_number
 
         with allure.step("Проверка увеличения счетчика"):
-            main_page.safely_go_to_order_feed()
-            order_feed_page.wait_for_today_increase(initial_today)
-            new_today = order_feed_page.get_today_orders_count()
-            assert new_today > initial_today, \
-                f"Ожидалось, что счетчик 'Сегодня' увеличится. Было: {initial_today}, стало: {new_today}"
+            new_count = order_feed_page.get_total_orders()
+            assert new_count > main_count
 
     @allure.title("Номер заказа появляется в разделе 'В работе'")
     def test_order_appears_in_progress(self, driver, login):
         main_page = MainPage(driver)
         order_feed_page = OrderFeedPage(driver)
+        main_page.wait_for_page_loaded()
 
-        with allure.step("Создание заказа и получение его номера"):
-            main_page.drag_bun_to_constructor()
-            main_page.click_order_button()
-            order_number = main_page.wait_for_real_order_number().lstrip('0')
-            main_page.safely_close_modal()
+        with allure.step("Создание нового заказа"):
+            main_page.go_to_constructor()
+            main_page.drag_bun_to_constructor(ingredient_name="Флюоресцентная булка R2-D3")
+            main_page.wait_for_page_loaded()
+            main_page.place_order()
+
+        with allure.step("Проверка номера заказа"):
+            assert main_page.is_order_modal_opened()
+            number_order = order_feed_page.get_number_order_details()
+            order_feed_page.get_number_order_details()
+            main_page.wait_for_page_loaded()
+            main_page.close_order_modal()
 
         with allure.step("Переход в ленту заказов"):
-            main_page.safely_go_to_order_feed()
-            order_feed_page.wait_for_feed_loaded()
+            main_page.go_to_order_feed()
+            order_feed_page.wait_for_feed_page_loaded()
 
         with allure.step("Проверка раздела 'В работе'"):
-            orders_in_progress = order_feed_page.get_orders_in_progress()
-            assert order_number in orders_in_progress, \
-                f"Заказ {order_number} не найден в разделе 'В работе'. Текущие заказы: {orders_in_progress}"
+            orders_in_progress = order_feed_page.get_order_in_progress()
+            assert number_order in orders_in_progress

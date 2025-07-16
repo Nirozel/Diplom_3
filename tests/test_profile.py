@@ -21,8 +21,10 @@ class TestProfile:
         with allure.step("Переход на страницу 'Профиль'"):
             main_page.go_to_profile()
             main_page.wait_for_page_loaded()
+            assert profile_page.is_save_button_visible()
         with allure.step("Переход на странцу 'История заказов'"):
-            profile_page.click_order_history_link()
+            main_page.wait_for_page_loaded()
+            profile_page.click_order_history_button()
         with allure.step("Проверка перехода в Историю"):
             assert "account/order-history" in driver.current_url
 
@@ -33,7 +35,9 @@ class TestProfile:
         with allure.step("Переход на страницу 'Профиль'"):
             main_page.go_to_profile()
             main_page.wait_for_page_loaded()
+            assert profile_page.is_save_button_visible()
             with allure.step("Тап по кнопку 'Выход'"):
+                main_page.wait_for_page_loaded()
                 profile_page.click_logout_button()
         with allure.step("Проверка отображения кнопки 'Войти'"):
             assert main_page.is_login_button_visible()

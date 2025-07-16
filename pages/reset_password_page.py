@@ -3,8 +3,8 @@ from locators.reset_password_locators import ResetPasswordLocators
 
 
 class ResetPasswordPage(BasePage):
-    def click_show_password_button(self):
-        self.safe_click_with_modal_handling(
+    def click_show_password(self):
+        self.click_with_modal_handling(
             ResetPasswordLocators.SHOW_PASSWORD_BUTTON,
             ResetPasswordLocators.MODAL_OVERLAY
         )

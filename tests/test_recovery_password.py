@@ -58,7 +58,7 @@ class TestPasswordRecovery:
         with allure.step("Ввод email и отправка запроса"):
             forgot_password_page.enter_email(TEST_EMAIL)
             forgot_password_page.click_restore_button()
-            reset_password_page.click_show_password_button()
+            reset_password_page.click_show_password()
 
         with allure.step("Проверка активности поля пароля"):
             assert reset_password_page.is_password_input_active()
